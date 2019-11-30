@@ -38,7 +38,7 @@ public class JPAConfig {
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(dataSource());
         entityManagerFactory.setJpaVendorAdapter(jpaVendor);
-        entityManagerFactory.setPackagesToScan("com.baichen.xunwu.entity"); // 实体类报名
+        entityManagerFactory.setPackagesToScan("com.baichen.xunwu.entity"); // 实体类包名
         return entityManagerFactory;
     }
 
