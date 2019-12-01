@@ -1,9 +1,10 @@
 package com.baichen.xunwu.config;
 
 import com.baichen.xunwu.security.AuthProvider;
+import com.baichen.xunwu.security.LoginAuthFailHandler;
+import com.baichen.xunwu.security.LoginUrlEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @Description Spring Security配置类
  */
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)   // 要加上后面这个属性，因为Spring Security默认是
+@EnableGlobalMethodSecurity(prePostEnabled = true)   // 要加上后面这个属性，因为Spring Security默认是不能用注解
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
@@ -39,8 +40,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login") // 配置角色登录处理入口
-                .and();
-        http.csrf().disable().authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
+                .failureHandler(authFailHandler())
+                .and()
+                .logout().logoutSuccessUrl("/logout/page") //对应HomeController中对应的返回页面
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(urlEntryPoint())
+                .accessDeniedPage("/403");
+        // 禁用csrf及HTTP验证
+        http.csrf().disable();
         //因为前端框架H-UI是基于iframe开发的，所以这里需要开启同源
         http.headers().frameOptions().sameOrigin();
     }
@@ -61,5 +71,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthProvider authProvider() {
         return new AuthProvider();
+    }
+
+    @Bean
+    public LoginUrlEntryPoint urlEntryPoint() { // 以bean的形式注入
+        return new LoginUrlEntryPoint("/user/login");
+    }
+
+    @Bean
+    public LoginAuthFailHandler authFailHandler() {
+        return new LoginAuthFailHandler(urlEntryPoint());
     }
 }

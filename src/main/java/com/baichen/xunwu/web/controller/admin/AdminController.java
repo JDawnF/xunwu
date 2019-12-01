@@ -1,7 +1,13 @@
 package com.baichen.xunwu.web.controller.admin;
 
+import com.baichen.xunwu.base.ApiResponse;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @Date: 2019-11-30 19:39
@@ -36,4 +42,21 @@ public class AdminController {
     public String adminLoginPage() {
         return "admin/login";
     }
+    /**
+     * 房源列表页
+     * @return
+     */
+    @GetMapping("admin/house/list")
+    public String houseListPage() {
+        return "admin/house-list";
+    }
+    /**
+     * 新增房源功能页
+     * @return
+     */
+    @GetMapping("admin/add/house")
+    public String addHousePage() {
+        return "admin/house-add";
+    }
+
 }

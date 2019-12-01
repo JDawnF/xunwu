@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @Description
  */
 @Entity
-@Table(name = "user")   // 映射数据库表明
+@Table(name = "user")   // 映射数据库表名
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 要兼容hibernate和h2，所以这里不能用auto
